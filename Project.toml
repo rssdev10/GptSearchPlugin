@@ -1,0 +1,21 @@
+name = "GptSearchPlugin"
+uuid = "41fc7bca-3a12-4605-bc38-968b59bf8d02"
+authors = ["Community contributors"]
+version = "0.1.0"
+
+[deps]
+BytePairEncoding = "a4280ba5-8788-555a-8ca8-4a8c3d966a71"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+ElasticsearchClient = "e586a49d-aa29-4ce5-8f91-fa4f824367bd"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Mocking = "78c3b35d-d492-501b-9361-3d52fe80e533"
+OpenAI = "e9f21f70-7185-4079-aca2-91159181367c"
+OpenAPI = "d5e62ea6-ddf3-4d43-8e4c-ad5e6c8bfd7d"
+TextEncodeBase = "f92c20c0-9f2a-4705-8116-881385faba05"
+TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
+URIs = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[extra]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
