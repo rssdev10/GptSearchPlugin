@@ -1,0 +1,19 @@
+{
+  "schema_version": "v1",
+  "name_for_model": "retrieval",
+  "name_for_human": "Course retrieval Plugin",
+  "description_for_model": "Plugin for searching through courses provided by OpenSesame Inc. to find answers to questions and retrieve relevant information.",
+  "description_for_human": "Search through OpenSesame courses.",
+  "auth": {
+    "type": "user_http",
+    "authorization_type": "bearer"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost/.well-known/openapi.yaml",
+    "has_user_authentication": false
+  },
+  "logo_url": "http://localhost/.well-known/logo.png",
+  "contact_email": "people@ACME.com",
+  "legal_info_url": "http://localhost/privacy"
+}
