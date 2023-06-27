@@ -1,31 +1,93 @@
 module ElasticsearchClientExt
 
 using ElasticsearchClient
+using Mustache
+using JSON
+using Mocking
 
-using .GptSearchPlugin
-using .GptSearchPlugin.DataStore
+using ..DataStore
+using ..DataStore: AbstractStorage
+using ...Server
+using ...Server:
+    DocumentChunk, DocumentChunkMetadata, 
+    QueryWithEmbedding, QueryResult, 
+    DocumentMetadataFilter
+
+const CHUNKS_INDEX_NAME = "gpt_plugin_chunks_knn_index"
+const CHUNKS_INDEX_SCHEMA_FILE_PATH =
+    joinpath(@__DIR__, "..", "es_settings", "chunks_index_schema.json")
+
+const DEFAULT_DIMENSION = 1536
+const DEFAULT_HNSW_SPACE_TYPE = "innerproduct"
+const DEFAULT_HNSW_EF_CONSTRUCTION = 64
+const DEFAULT_HNSW_M = 8
 
 struct ElasticsearchStorage <: AbstractStorage
-    client::ElasticsearchClient
+    client::ElasticsearchClient.Client
+
+    function ElasticsearchStorage(client::ElasticsearchClient.Client)
+        if !ElasticsearchClient.Indices.exists(client, index=CHUNKS_INDEX_NAME)
+            index_settings_template =
+                read(CHUNKS_INDEX_SCHEMA_FILE_PATH) |>
+                String |>
+                Mustache.parse
+
+            index_settings = index_settings_template(
+                dimension=hnsw_dimension(),
+                space_type=hnsw_space_type(),
+                ef_construction=hnsw_ef_construction(),
+                m=hnsw_m()
+            ) |> JSON.parse
+
+            try
+                ElasticsearchClient.Indices.create(client, index=CHUNKS_INDEX_NAME, body=index_settings)
+            catch e
+                @error e
+            end
+        end
+
+        new(client)
+    end
 end
+
+hnsw_dimension() = get(ENV, "HNSW_DIMENSION", DEFAULT_DIMENSION)
+hnsw_space_type() = get(ENV, "HNSW_SPACE_TYPE", DEFAULT_HNSW_SPACE_TYPE)
+hnsw_ef_construction() = get(ENV, "HNSW_EF_CONSTRUCTION", DEFAULT_HNSW_EF_CONSTRUCTION)
+hnsw_m() = get(ENV, "HNSW_M", DEFAULT_HNSW_M)
 
 """
 Takes in a list of list of document chunks and inserts them into the database.
 
 Return a list of document ids.
 """
-function GptSearchPlugin.DataStore.upsert(
+function DataStore.upsert(
     storage::ElasticsearchStorage,
-    chunks:Dict{String,<:AbstractVector{DocumentChunk}}
-)::Vector{String}
-    error("The method 'upsert' is not implemeted for $(typeof(storage))")
+    chunks::Dict{String,<:AbstractVector{DocumentChunk}}
+)::Vector{<:AbstractString}
+    index_batch = AbstractDict[]
+
+    for doc_chunks in values(chunks), doc_chunk in doc_chunks
+        operation_name = :index
+        operation_body = Dict(
+            :_id => doc_chunk.id
+            :data => Dict(
+                :text => doc_chunk.text,
+                :metadata => doc_chunk.metadata,
+                :embedding => doc_chunk.embedding
+            )
+        )
+
+        push!(index_batch, Dict(operation_name => operation_body))
+    end
+
+    ElasticsearchClient.bulk(storage.client, index=CHUNKS_INDEX_NAME, body=index_batch)
 end
 
 """
 Takes in a list of queries with embeddings and filters and 
 returns a list of query results with matching document chunks and scores.
 """
-function GptSearchPlugin.DataStore.query(
+function DataStore.query(
     storage::ElasticsearchStorage,
     queries::AbstractVector{QueryWithEmbedding}
 )::Vector{QueryResult}
@@ -38,12 +100,37 @@ Multiple parameters can be used at once.
 
 Returns whether the operation was successful.
 """
-function GptSearchPlugin.DataStore.delete(
+function DataStore.delete(
     storage::ElasticsearchStorage,
     ids::AbstractVector{String};
     filter::Union{Vector{DocumentMetadataFilter},Nothing}=nothing
 )::Bool
-    error("The method 'delete' is not implemeted for $(typeof(storage))")
+    should_conds = AbstractDict[
+        Dict(
+            :ids => Dict(:values => ids)
+        )
+    ]
+
+    if !isnothing(filter)
+        document_ids = getproperty.(filter, :document_id)
+        push!(
+            should_conds,
+            Dict(
+                :terms => Dict( "metadata.document_id" => document_ids)
+            )
+        )
+    end
+
+    query = Dict(
+        :query => Dict(
+            :bool => Dict(
+                :should => should_conds
+            )
+        )
+    )
+    response = ElasticsearchClient.delete_by_query(storage.client, index=CHUNKS_INDEX_NAME, body=query)
+
+    response.status == 200
 end
 
 """
@@ -51,7 +138,7 @@ Removes everything in the datastore
 
 Returns whether the operation was successful.
 """
-function GptSearchPlugin.DataStore.delete_all(storage::ElasticsearchStorage)
+function DataStore.delete_all(storage::ElasticsearchStorage)
     error("The method 'delete_all' is not implemeted for $(typeof(storage))")
 end
 

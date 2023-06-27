@@ -1,3 +1,5 @@
+ENV["DATASTORE"] = "elasticsearch"
+
 using Test
 using GptSearchPlugin
 using Mocking
@@ -22,3 +24,5 @@ arr_chunks = apply(patch) do
 end
 
 @test length(first(arr_chunks) |> values |> last) == length(text_chunks)
+
+@show first(arr_chunks)
