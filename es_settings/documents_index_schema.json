@@ -1,7 +1,0 @@
-{
-  "mappings": {
-    "properties": {
-      "text": { "type": "text" }
-    }
-  }
-}
