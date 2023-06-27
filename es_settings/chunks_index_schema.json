@@ -1,10 +1,4 @@
 {
-  "settings": {
-    "index": {
-      "knn": true,
-      "knn.algo_param.ef_search": 100
-    }
-  },
   "mappings": {
     "properties": {
       "text": { "type": "text" },
@@ -19,17 +13,10 @@
         }
       },
       "embedding": {
-        "type": "knn_vector",
-        "dimension": "{{:dimension}}",
-        "method": {
-          "name": "hnsw",
-          "space_type": "{{:space_type}}",
-          "engine": "nmslib",
-          "parameters": {
-            "ef_construction": "{{:ef_construction}}",
-            "m": "{{:m}}"
-          }
-        }
+        "type": "dense_vector",
+        "dims": "{{:dimension}}",
+        "index": true,
+        "similarity": "{{:similarity}}"
       }
     }
   }

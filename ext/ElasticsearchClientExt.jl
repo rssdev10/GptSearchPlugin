@@ -17,10 +17,8 @@ const CHUNKS_INDEX_NAME = "gpt_plugin_chunks_knn_index"
 const CHUNKS_INDEX_SCHEMA_FILE_PATH =
     joinpath(@__DIR__, "..", "es_settings", "chunks_index_schema.json")
 
-const DEFAULT_DIMENSION = 1536
-const DEFAULT_HNSW_SPACE_TYPE = "innerproduct"
-const DEFAULT_HNSW_EF_CONSTRUCTION = 64
-const DEFAULT_HNSW_M = 8
+const DEFAULT_KNN_DIMENSION = 1536
+const DEFAULT_KNN_SIMILARITY = "dot_product"
 
 struct ElasticsearchStorage <: AbstractStorage
     client::ElasticsearchClient.Client
@@ -33,10 +31,8 @@ struct ElasticsearchStorage <: AbstractStorage
                 Mustache.parse
 
             index_settings = index_settings_template(
-                dimension=hnsw_dimension(),
-                space_type=hnsw_space_type(),
-                ef_construction=hnsw_ef_construction(),
-                m=hnsw_m()
+                dimension=knn_dimension(),
+                similarity=knn_similarity()
             ) |> JSON.parse
 
             try
@@ -50,10 +46,8 @@ struct ElasticsearchStorage <: AbstractStorage
     end
 end
 
-hnsw_dimension() = get(ENV, "HNSW_DIMENSION", DEFAULT_DIMENSION)
-hnsw_space_type() = get(ENV, "HNSW_SPACE_TYPE", DEFAULT_HNSW_SPACE_TYPE)
-hnsw_ef_construction() = get(ENV, "HNSW_EF_CONSTRUCTION", DEFAULT_HNSW_EF_CONSTRUCTION)
-hnsw_m() = get(ENV, "HNSW_M", DEFAULT_HNSW_M)
+knn_dimension() = get(ENV, "KNN_DIMENSION", DEFAULT_KNN_DIMENSION)
+knn_similarity() = get(ENV, "KNN_SIMILARITY", DEFAULT_KNN_SIMILARITY)
 
 """
 Takes in a list of list of document chunks and inserts them into the database.
