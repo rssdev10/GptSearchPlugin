@@ -5,7 +5,7 @@ global DATASTORE_MODULE = nothing
 
 if isequal(uppercase(datastore_env()), "ELASTICSEARCH")
     @info "Pluging ElasticsearchClientExt"
-    include("../../ext/ElasticsearchClientExt.jl")
+    include("../../ext/ElasticsearchClientExt/ElasticsearchClientExt.jl")
 
     DATASTORE_MODULE = ElasticsearchClientExt
 end

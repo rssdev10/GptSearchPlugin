@@ -152,20 +152,21 @@ components:
           default: 3
     QueryWithEmbedding:
       type: object
-      required:
-        - query
-        - results
       properties:
         query:
+          title: Query
           type: string
+        filter:
+          $ref: "#/components/schemas/DocumentMetadataFilter"
+        top_k:
+          title: Top K
+          type: integer
+          default: 3
         embedding:
           title: Embedding
           type: array
           items:
             type: number
-        score:
-          title: Score
-          type: number
     QueryRequest:
       title: QueryRequest
       required:
