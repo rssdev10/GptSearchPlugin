@@ -1,13 +1,17 @@
 
-isdefined(Main, :ElasticsearchClient) && include("../../ext/ElasticsearchClientExt.jl")
+datastore_env() = get(ENV, "DATASTORE", "")
+
+global DATASTORE_MODULE = nothing
+
+if isequal(uppercase(datastore_env()), "ELASTICSEARCH")
+    @info "Pluging ElasticsearchClientExt"
+    include("../../ext/ElasticsearchClientExt/ElasticsearchClientExt.jl")
+
+    DATASTORE_MODULE = ElasticsearchClientExt
+end
 
 function get_datastore()::Union{AbstractStorage,Nothing}
-    datastore = get(ENV, "DATASTORE", nothing)
-    isnothing(datastore) && error("DATASTORE environment variable must be non empty")
+    isnothing(DATASTORE_MODULE) && error("DATASTORE environment variable must be non empty and valid")
 
-    return if isequal(uppercase(datastore), "ELASTICSEARCH")
-        ElasticsearchClientExt.create_storage()
-    else
-        nothing
-    end
+    DATASTORE_MODULE.create_storage()
 end

@@ -5,32 +5,35 @@
 @doc raw"""
     QueryWithEmbedding(;
         query=nothing,
+        filter=nothing,
+        top_k=3,
         embedding=nothing,
-        score=nothing,
     )
 
     - query::String
+    - filter::DocumentMetadataFilter
+    - top_k::Int64
     - embedding::Vector{Float64}
-    - score::Float64
 """
 Base.@kwdef mutable struct QueryWithEmbedding <: OpenAPI.APIModel
     query::Union{Nothing, String} = nothing
+    filter = nothing # spec type: Union{ Nothing, DocumentMetadataFilter }
+    top_k::Union{Nothing, Int64} = 3
     embedding::Union{Nothing, Vector{Float64}} = nothing
-    score::Union{Nothing, Float64} = nothing
 
-    function QueryWithEmbedding(query, embedding, score, )
+    function QueryWithEmbedding(query, filter, top_k, embedding, )
         OpenAPI.validate_property(QueryWithEmbedding, Symbol("query"), query)
+        OpenAPI.validate_property(QueryWithEmbedding, Symbol("filter"), filter)
+        OpenAPI.validate_property(QueryWithEmbedding, Symbol("top_k"), top_k)
         OpenAPI.validate_property(QueryWithEmbedding, Symbol("embedding"), embedding)
-        OpenAPI.validate_property(QueryWithEmbedding, Symbol("score"), score)
-        return new(query, embedding, score, )
+        return new(query, filter, top_k, embedding, )
     end
 end # type QueryWithEmbedding
 
-const _property_types_QueryWithEmbedding = Dict{Symbol,String}(Symbol("query")=>"String", Symbol("embedding")=>"Vector{Float64}", Symbol("score")=>"Float64", )
+const _property_types_QueryWithEmbedding = Dict{Symbol,String}(Symbol("query")=>"String", Symbol("filter")=>"DocumentMetadataFilter", Symbol("top_k")=>"Int64", Symbol("embedding")=>"Vector{Float64}", )
 OpenAPI.property_type(::Type{ QueryWithEmbedding }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_QueryWithEmbedding[name]))}
 
 function check_required(o::QueryWithEmbedding)
-    o.query === nothing && (return false)
     true
 end
 
