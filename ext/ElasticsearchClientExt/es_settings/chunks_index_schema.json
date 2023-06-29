@@ -1,0 +1,23 @@
+{
+  "mappings": {
+    "properties": {
+      "text": { "type": "text" },
+      "metadata": {
+        "type": "nested",
+        "properties": {
+          "document_id": { "type": "keyword" },
+          "source_id": { "type": "keyword" },
+          "author": { "type": "text" },
+          "url": { "type": "text" },
+          "created_at": { "type": "keyword" }
+        }
+      },
+      "embedding": {
+        "type": "dense_vector",
+        "dims": "{{:dimension}}",
+        "index": true,
+        "similarity": "{{:similarity}}"
+      }
+    }
+  }
+}

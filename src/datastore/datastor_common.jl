@@ -32,9 +32,8 @@ Multiple parameters can be used at once.
 Returns whether the operation was successful.
 """
 function delete(
-    storage::AbstractStorage,
-    ids::AbstractVector{String};
-    filter::Union{Vector{DocumentMetadataFilter},Nothing}=nothing
+    storage::AbstractStorage;
+    filter::Vector{DocumentMetadataFilter}
 )::Bool
     error("The method 'delete' is not implemeted for $(typeof(storage))")
 end

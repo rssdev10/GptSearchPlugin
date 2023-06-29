@@ -19,7 +19,6 @@ function upsert(documents::AbstractVector{Document}; chunk_token_size=0)::Vector
 
     delete(
         STORAGE,
-        documents,
         filter=map(
             document -> DocumentMetadataFilter(document_id=document.id),
             documents
