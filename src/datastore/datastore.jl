@@ -1,6 +1,8 @@
 module DataStore
 
+using ..Server
 using Mocking
+using DebugDataWriter
 
 include("datastor_common.jl")
 include("factory.jl")
@@ -38,16 +40,21 @@ function query(queries::AbstractVector{Query})::Vector{QueryResult}
 
     # get a list of of just the queries from the Query list
     query_texts = [query.query for query in queries]
-    query_embeddings = @mock create_embeddings(OPENAI_API_KEY, query_texts)
+    query_embeddings = Server.create_embeddings(query_texts)
 
     # hydrate the queries with embeddings
-    queries_with_embeddings = map(zip(queries, query_embeddings)) do query, embedding
-        query_we = QueryWithEmbedding(embedding=embedding)
-        for x in fieldnames(typeof(query))
-            query_we[x] = query[x]
-        end
-        query_we
-    end
+    queries_with_embeddings =
+        Iterators.map(zip(queries, query_embeddings)) do (query, embedding)
+            query_we = QueryWithEmbedding()
+            for x in fieldnames(typeof(query))
+                setproperty!(query_we, x, getproperty(query, x))
+            end
+            query_we.embedding = embedding
+            query_we
+        end |> collect
+
+    @debug_output get_debug_id("datastore") "storage query" queries_with_embeddings
+
     return query(STORAGE, queries_with_embeddings)
 end
 

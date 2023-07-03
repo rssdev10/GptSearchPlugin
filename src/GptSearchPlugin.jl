@@ -2,4 +2,4 @@ module GptSearchPlugin
 
 include("server.jl")
 
-end # module ChatGptSearchPlugin
+end # module GptSearchPlugin
