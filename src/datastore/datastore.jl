@@ -27,7 +27,7 @@ function upsert(documents::AbstractVector{Document}; chunk_token_size=0)::Vector
         )
     )
 
-    chunks = get_document_chunks(documents, chunk_token_size)
+    chunks = Server.get_document_chunks(documents, chunk_token_size)
 
     return upsert(STORAGE, chunks)
 end

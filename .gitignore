@@ -4,6 +4,7 @@ Manifest.toml
 *.jl.mem
 /docs/build/
 /docs/Manifest.toml
+debug_out
 
 
 # VS Code
