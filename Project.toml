@@ -6,6 +6,7 @@ version = "0.1.0"
 [deps]
 BytePairEncoding = "a4280ba5-8788-555a-8ca8-4a8c3d966a71"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+DebugDataWriter = "810e33c6-efd6-4462-86b1-f71ae88af720"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 ElasticsearchClient = "e586a49d-aa29-4ce5-8f91-fa4f824367bd"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"

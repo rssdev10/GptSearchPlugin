@@ -1,14 +1,10 @@
 using .GptPluginServer: Document, DocumentChunk, DocumentChunkMetadata
 
-using OpenAI: create_embeddings
-
 using UUIDs
 
 using BytePairEncoding: gpt2_codemap, GPT2Tokenization, Merge, BPE, BPETokenization
 using TextEncodeBase: TextEncodeBase, FlatTokenizer, CodeNormalizer, Sentence, getvalue, CodeUnMap
 using Downloads
-
-using Mocking
 
 # Global variables
 tokenizer = let
@@ -146,7 +142,7 @@ function create_document_chunks(
     metadata = DocumentChunkMetadata()
     if !isnothing(doc.metadata)
         for x in fieldnames(typeof(doc.metadata))
-            metadata[x] = doc.metadata[x]
+            setproperty!(metadata, x, getproperty(doc.metadata, x))
         end
     end
 
@@ -213,7 +209,7 @@ function get_document_chunks(
         ]
 
         # Get the embeddings for the batch texts
-        batch_embeddings = @mock create_embeddings(OPENAI_API_KEY, batch_texts)
+        batch_embeddings = create_embeddings(batch_texts)
 
         # Append the batch embeddings to the embeddings list
         append!(embeddings, batch_embeddings)
