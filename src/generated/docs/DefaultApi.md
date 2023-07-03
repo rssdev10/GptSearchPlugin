@@ -38,7 +38,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upsert_post**
-> upsert_post(req::HTTP.Request; document=nothing,) -> Vector{String}
+> upsert_post(req::HTTP.Request; upsert_request=nothing,) -> Vector{String}
 
 Data upload
 
@@ -54,7 +54,7 @@ Name | Type | Description  | Notes
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **document** | [**Vector{Document}**](Document.md)|  | 
+ **upsert_request** | [**UpsertRequest**](UpsertRequest.md)|  | 
 
 ### Return type
 

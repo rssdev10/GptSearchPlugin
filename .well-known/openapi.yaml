@@ -234,9 +234,14 @@ components:
           title: Error Type
           type: string
     UpsertRequest:
-      type: array
-      items:
-        $ref: "#/components/schemas/Document"
+      required:
+        - documents
+      properties:
+        documents:
+          title: Documents
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
     Document:
       type: object
       required:

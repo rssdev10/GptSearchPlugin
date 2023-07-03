@@ -86,8 +86,12 @@ function get_text_chunks(text::String, chunk_token_size=0)::Vector{<:AbstractStr
 
         # If there is a punctuation mark, and the last punctuation index is before MIN_CHUNK_SIZE_CHARS
         if !isnothing(last_punctuation) && last_punctuation > MIN_CHUNK_SIZE_CHARS
+            range_end_index = min(
+                lastindex(chunk_text),
+                nextind(chunk_text, last_punctuation)
+            )
             # Truncate the chunk text at the punctuation mark
-            chunk_text = chunk_text[begin:last_punctuation+1]
+            chunk_text = chunk_text[begin:range_end_index]
         end
 
         # Remove any newline characters and strip any leading or trailing whitespace

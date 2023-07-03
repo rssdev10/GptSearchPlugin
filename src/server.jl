@@ -31,8 +31,10 @@ end
 """
 - *invocation:* POST /upsert
 """
-function upsert_post(req::HTTP.Request; documents=nothing)::Vector{<:AbstractString}
-    if isa(document, Vector)
+function upsert_post(req::HTTP.Request; upsert_request=nothing)::Vector{<:AbstractString}
+    documents = upsert_request.documents
+
+    if isa(documents, AbstractVector)
         doc_ids = DataStore.upsert(documents)
 
         isempty(doc_ids) || return doc_ids
