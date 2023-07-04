@@ -10,7 +10,7 @@ Return a list of document ids.
 function upsert(
     storage::AbstractStorage,
     chunks::Dict{String,<:AbstractVector{DocumentChunk}}
-)::Vector{String}
+)::UpsertResponse
     error("The method 'upsert' is not implemeted for $(typeof(storage))")
 end
 

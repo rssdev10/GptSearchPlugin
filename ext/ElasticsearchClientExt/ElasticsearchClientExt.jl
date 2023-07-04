@@ -11,7 +11,8 @@ using ...Server
 using ...Server:
     DocumentChunk, DocumentChunkMetadata, 
     QueryWithEmbedding, QueryResult, 
-    DocumentMetadataFilter, DocumentChunkWithScore
+    DocumentMetadataFilter, DocumentChunkWithScore,
+    UpsertResponse
 
 const DEFAULT_CHUNKS_INDEX_NAME = "gpt_plugin_chunks_knn_index"
 const CHUNKS_INDEX_SCHEMA_FILE_PATH =
@@ -62,7 +63,7 @@ Return a list of document ids.
 function DataStore.upsert(
     storage::ElasticsearchStorage,
     chunks::Dict{String,<:AbstractVector{DocumentChunk}}
-)::Vector{<:AbstractString}
+)::UpsertResponse
     index_batch = AbstractDict[]
 
     for doc_chunks in values(chunks), doc_chunk in doc_chunks
@@ -82,7 +83,7 @@ function DataStore.upsert(
     ElasticsearchClient.bulk(storage.client, index=storage.chunks_index_name, body=index_batch)
     ElasticsearchClient.Indices.refresh(storage.client, index=storage.chunks_index_name)
 
-    collect(keys(chunks))
+    UpsertResponse(collect(keys(chunks)))
 end
 
 """

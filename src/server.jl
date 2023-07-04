@@ -31,13 +31,13 @@ end
 """
 - *invocation:* POST /upsert
 """
-function upsert_post(req::HTTP.Request; upsert_request=nothing)::Vector{<:AbstractString}
+function upsert_post(req::HTTP.Request; upsert_request=nothing)::UpsertResponse
     documents = upsert_request.documents
 
     if isa(documents, AbstractVector)
         doc_ids = DataStore.upsert(documents)
 
-        isempty(doc_ids) || return doc_ids
+        isempty(doc_ids.ids) || return doc_ids
     end
 
     return HTTP.Response(500, "Internal server error")

@@ -12,7 +12,7 @@ The following server methods must be implemented:
     - *signature:* query_query_post(req::HTTP.Request, query_request::QueryRequest;) -> QueryResponse
 - **upsert_post**
     - *invocation:* POST /upsert
-    - *signature:* upsert_post(req::HTTP.Request; upsert_request=nothing,) -> Vector{String}
+    - *signature:* upsert_post(req::HTTP.Request; upsert_request=nothing,) -> UpsertResponse
 """
 module GptPluginServer
 
@@ -70,6 +70,7 @@ export QueryResult
 export QueryWithEmbedding
 export Source
 export UpsertRequest
+export UpsertResponse
 export ValidationError
 
 end # module GptPluginServer

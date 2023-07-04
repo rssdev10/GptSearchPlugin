@@ -65,7 +65,8 @@ components:
       type: object
       properties:
         source:
-          $ref: "#/components/schemas/Source"
+          type: string
+          # $ref: "#/components/schemas/Source"
         source_id:
           title: Source Id
           type: string
@@ -113,7 +114,8 @@ components:
           title: Document Id
           type: string
         source:
-          $ref: "#/components/schemas/Source"
+          type: string
+          # $ref: "#/components/schemas/Source"
         source_id:
           title: Source Id
           type: string
@@ -258,7 +260,8 @@ components:
       type: object
       properties:
         source:
-          $ref: "#/components/schemas/Source"
+          type: string
+          # $ref: "#/components/schemas/Source"
         source_id:
           type: string
         url:
@@ -288,9 +291,14 @@ components:
           title: Score
           type: number
     UpsertResponse:
-      type: array
-      items:
-        type: string
+      type: object
+      required:
+        - ids
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
   securitySchemes:
     HTTPBearer:
       type: http

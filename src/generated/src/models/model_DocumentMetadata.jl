@@ -11,14 +11,14 @@
         author=nothing,
     )
 
-    - source::Source
+    - source::String
     - source_id::String
     - url::String
     - created_at::String
     - author::String
 """
 Base.@kwdef mutable struct DocumentMetadata <: OpenAPI.APIModel
-    source = nothing # spec type: Union{ Nothing, Source }
+    source::Union{Nothing, String} = nothing
     source_id::Union{Nothing, String} = nothing
     url::Union{Nothing, String} = nothing
     created_at::Union{Nothing, String} = nothing
@@ -34,7 +34,7 @@ Base.@kwdef mutable struct DocumentMetadata <: OpenAPI.APIModel
     end
 end # type DocumentMetadata
 
-const _property_types_DocumentMetadata = Dict{Symbol,String}(Symbol("source")=>"Source", Symbol("source_id")=>"String", Symbol("url")=>"String", Symbol("created_at")=>"String", Symbol("author")=>"String", )
+const _property_types_DocumentMetadata = Dict{Symbol,String}(Symbol("source")=>"String", Symbol("source_id")=>"String", Symbol("url")=>"String", Symbol("created_at")=>"String", Symbol("author")=>"String", )
 OpenAPI.property_type(::Type{ DocumentMetadata }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_DocumentMetadata[name]))}
 
 function check_required(o::DocumentMetadata)

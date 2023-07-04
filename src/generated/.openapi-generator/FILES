@@ -15,6 +15,7 @@ docs/QueryResult.md
 docs/QueryWithEmbedding.md
 docs/Source.md
 docs/UpsertRequest.md
+docs/UpsertResponse.md
 docs/ValidationError.md
 src/GptPluginServer.jl
 src/apis/api_DefaultApi.jl
@@ -34,4 +35,5 @@ src/models/model_QueryResult.jl
 src/models/model_QueryWithEmbedding.jl
 src/models/model_Source.jl
 src/models/model_UpsertRequest.jl
+src/models/model_UpsertResponse.jl
 src/models/model_ValidationError.jl
