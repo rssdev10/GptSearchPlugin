@@ -13,7 +13,7 @@
     )
 
     - document_id::String
-    - source::Source
+    - source::String
     - source_id::String
     - author::String
     - start_date::String
@@ -21,7 +21,7 @@
 """
 Base.@kwdef mutable struct DocumentMetadataFilter <: OpenAPI.APIModel
     document_id::Union{Nothing, String} = nothing
-    source = nothing # spec type: Union{ Nothing, Source }
+    source::Union{Nothing, String} = nothing
     source_id::Union{Nothing, String} = nothing
     author::Union{Nothing, String} = nothing
     start_date::Union{Nothing, String} = nothing
@@ -38,7 +38,7 @@ Base.@kwdef mutable struct DocumentMetadataFilter <: OpenAPI.APIModel
     end
 end # type DocumentMetadataFilter
 
-const _property_types_DocumentMetadataFilter = Dict{Symbol,String}(Symbol("document_id")=>"String", Symbol("source")=>"Source", Symbol("source_id")=>"String", Symbol("author")=>"String", Symbol("start_date")=>"String", Symbol("end_date")=>"String", )
+const _property_types_DocumentMetadataFilter = Dict{Symbol,String}(Symbol("document_id")=>"String", Symbol("source")=>"String", Symbol("source_id")=>"String", Symbol("author")=>"String", Symbol("start_date")=>"String", Symbol("end_date")=>"String", )
 OpenAPI.property_type(::Type{ DocumentMetadataFilter }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_DocumentMetadataFilter[name]))}
 
 function check_required(o::DocumentMetadataFilter)

@@ -16,7 +16,7 @@ then inserts the new ones.
 
 Return a list of document ids.
 """
-function upsert(documents::AbstractVector{Document}; chunk_token_size=0)::Vector{String}
+function upsert(documents::AbstractVector{Document}; chunk_token_size=0)::UpsertResponse
     @assert !isnothing(STORAGE) "Storage is not initialized"
 
     delete(
