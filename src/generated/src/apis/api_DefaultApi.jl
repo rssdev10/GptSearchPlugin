@@ -32,7 +32,7 @@ end
 function upsert_post_read(handler)
     function upsert_post_read_handler(req::HTTP.Request)
         openapi_params = Dict{String,Any}()
-        openapi_params["Document"] = OpenAPI.Servers.to_param_type(Vector{Document}, String(req.body))
+        openapi_params["UpsertRequest"] = OpenAPI.Servers.to_param_type(UpsertRequest, String(req.body))
         req.context[:openapi_params] = openapi_params
 
         return handler(req)
@@ -50,7 +50,7 @@ end
 function upsert_post_invoke(impl; post_invoke=nothing)
     function upsert_post_invoke_handler(req::HTTP.Request)
         openapi_params = req.context[:openapi_params]
-        ret = impl.upsert_post(req::HTTP.Request; document=get(openapi_params, "Document", nothing),)
+        ret = impl.upsert_post(req::HTTP.Request; upsert_request=get(openapi_params, "UpsertRequest", nothing),)
         resp = OpenAPI.Servers.server_response(ret)
         return (post_invoke === nothing) ? resp : post_invoke(req, resp)
     end

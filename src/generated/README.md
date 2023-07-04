@@ -62,6 +62,8 @@ Class | Method | HTTP request | Description
  - [QueryResult](docs/QueryResult.md)
  - [QueryWithEmbedding](docs/QueryWithEmbedding.md)
  - [Source](docs/Source.md)
+ - [UpsertRequest](docs/UpsertRequest.md)
+ - [UpsertResponse](docs/UpsertResponse.md)
  - [ValidationError](docs/ValidationError.md)
 
 
