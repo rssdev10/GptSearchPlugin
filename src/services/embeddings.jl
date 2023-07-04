@@ -35,7 +35,7 @@ function create_embeddings(text::AbstractString)
     response.status != 200 && return result
 
     if (v = get(response.response, "data", nothing)) isa AbstractDict &&
-       (v = get(response, "embedding", nothing)) isa AbstractVector
+       (v = get(v, "embedding", nothing)) isa AbstractVector
         result = v
     end
 
