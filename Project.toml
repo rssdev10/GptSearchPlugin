@@ -20,5 +20,24 @@ TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
 URIs = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
 UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
-[extra]
+[compat]
+Aqua = "0.6"
+BytePairEncoding = "0.3"
+DebugDataWriter = "0.1"
+ElasticsearchClient = "0.2"
+HTTP = "1"
+JSON = "0.21"
+Mocking = "0.7"
+Mustache = "1"
+OpenAI = "0.8"
+OpenAPI = "0.1"
+TextEncodeBase = "0.6"
+TimeZones = "1"
+URIs = "1"
+
+[extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test", "Aqua"]
