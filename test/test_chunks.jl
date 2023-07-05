@@ -1,4 +1,4 @@
-ENV["DATASTORE"] = "elasticsearch"
+ENV["DATASTORE"] = "test"
 
 using Test
 using GptSearchPlugin
@@ -36,4 +36,4 @@ end
 
 @test length(first(arr_chunks) |> values |> last) == length(text_chunks)
 
-@show first(arr_chunks)
+# @show first(arr_chunks)
