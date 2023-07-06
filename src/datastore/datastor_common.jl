@@ -2,6 +2,8 @@ using ..GptPluginServer
 
 abstract type AbstractStorage end
 
+include("teststorage.jl")
+
 """
 Takes in a list of list of document chunks and inserts them into the database.
 

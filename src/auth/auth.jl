@@ -2,8 +2,9 @@ using HTTP
 
 function get_auth_middleware(except_list::AbstractSet)::Union{Function,Nothing}
     auth = nothing
-    if !((BEARER_TOKEN = get(ENV, "BEARER_TOKEN", nothing)) isa Nothing) && !isempty(BEARER_TOKEN)
-        auth = req -> validate_bearer_token(req, BEARER_TOKEN, except_list)
+    bearer_token = get(ENV, "BEARER_TOKEN", nothing)
+    if !isnothing(bearer_token) && !isempty(bearer_token)
+        auth = req -> validate_bearer_token(req, bearer_token, except_list)
     end
 
     return isnothing(auth) ?
@@ -32,7 +33,7 @@ function validate_bearer_token(
     auth_text = last(req.headers[auth_header_index])
 
     m = match(r"^Bearer[\t ]([\w\._-]*)\z", auth_text)
-    isnothing(m) && isempty(m.captures) && return false
+    (isnothing(m) || isempty(m.captures)) && return false
 
     found_token = first(m.captures)
 
