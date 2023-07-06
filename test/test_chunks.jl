@@ -1,4 +1,4 @@
-ENV["DATASTORE"] = "test"
+ENV["DATASTORE"] = "TEST"
 
 using Test
 using GptSearchPlugin
@@ -26,7 +26,7 @@ patch = @patch create_embeddings(api_key::String, text_vectors::AbstractVector) 
                     "embedding" => rand(10),
                     "object" => "embedding",
                 ),
-                text_vectors
+            text_vectors
         )
     )
 )

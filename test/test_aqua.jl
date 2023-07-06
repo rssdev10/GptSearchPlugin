@@ -1,4 +1,4 @@
-ENV["DATASTORE"] = "test"
+ENV["DATASTORE"] = "TEST"
 using GptSearchPlugin
 using Aqua
 

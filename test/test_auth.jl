@@ -1,4 +1,4 @@
-ENV["DATASTORE"] = "test"
+ENV["DATASTORE"] = "TEST"
 
 using Test
 using GptSearchPlugin
@@ -28,3 +28,13 @@ http_req_auth.target = "/query"
 
 push!(http_req_auth.headers, Pair("Authorization", "Bearer $jwt_bearer"))
 @test auth_handler(_ -> true)(http_req_auth)
+
+http_req_auth = HTTP.Messages.Request()
+http_req_auth.target = "/query"
+push!(http_req_auth.headers, Pair("Authorization", ""))
+@test auth_handler(_ -> true)(http_req_auth).status == 401
+
+http_req_auth = HTTP.Messages.Request()
+http_req_auth.target = "/query"
+push!(http_req_auth.headers, Pair("Authorization", "Bearer 1234567890"))
+@test auth_handler(_ -> true)(http_req_auth).status == 401
