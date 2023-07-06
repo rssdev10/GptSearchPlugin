@@ -1,4 +1,4 @@
-ENV["DATASTORE"] = "elasticsearch"
+ENV["DATASTORE"] = "TEST"
 
 using Test
 using GptSearchPlugin
@@ -26,7 +26,7 @@ patch = @patch create_embeddings(api_key::String, text_vectors::AbstractVector) 
                     "embedding" => rand(10),
                     "object" => "embedding",
                 ),
-                text_vectors
+            text_vectors
         )
     )
 )
@@ -36,4 +36,4 @@ end
 
 @test length(first(arr_chunks) |> values |> last) == length(text_chunks)
 
-@show first(arr_chunks)
+# @show first(arr_chunks)

@@ -10,6 +10,8 @@ include("services/chunks.jl")
 
 include("datastore/datastore.jl")
 
+include("auth/auth.jl")
+
 const server = Ref{Any}(nothing)
 
 """
@@ -54,7 +56,18 @@ end
 
 function run_server(port=3333)
     try
-        router = HTTP.Router()
+        router = HTTP.Handlers.Router(
+            HTTP.Handlers.default404,
+            HTTP.Handlers.default405,
+            get_auth_middleware(
+                Set([
+                    "/stop",
+                    "/.well-known/ai-plugin.json",
+                    "/.well-known/logo.png",
+                    "/.well-known/openapi.yaml"
+                ])
+            )
+        )
         router = GptPluginServer.register(router, @__MODULE__; path_prefix="")
         HTTP.register!(router, "POST", "/stop", stop)
         HTTP.register!(router, "GET", "/ping", ping)
