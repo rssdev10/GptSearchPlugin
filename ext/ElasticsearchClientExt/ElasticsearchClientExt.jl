@@ -104,8 +104,14 @@ function DataStore.query(
             map(response.body["hits"]["hits"]) do hit
                 source = hit["_source"]
 
+                stored_metadata = source["metadata"]
                 metadata = DocumentChunkMetadata(
-                    document_id=source["metadata"]["document_id"]
+                    source=get(stored_metadata, "source", nothing),
+                    source_id=get(stored_metadata, "source_id", nothing),
+                    url=get(stored_metadata, "url", nothing),
+                    created_at=get(stored_metadata, "created_at", nothing),
+                    author=get(stored_metadata, "author", nothing),
+                    document_id=get(stored_metadata, "document_id", nothing),
                 )
 
                 DocumentChunkWithScore(;
