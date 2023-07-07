@@ -7,8 +7,8 @@ using Mocking
 
 using ..DataStore
 using ..DataStore: AbstractStorage
-using ...Server
-using ...Server:
+using ...AppServer
+using ...AppServer:
     DocumentChunk, DocumentChunkMetadata, 
     QueryWithEmbedding, QueryResult, 
     DocumentMetadataFilter, DocumentChunkWithScore,

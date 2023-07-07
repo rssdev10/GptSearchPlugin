@@ -8,7 +8,8 @@ end
 tests = [
     # "test_aqua.jl",
     "test_auth.jl",
-    "test_chunks.jl"
+    "test_chunks.jl",
+    "test_appserver.jl"
 ]
 
 @info log("Running tests....")

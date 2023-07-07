@@ -9,11 +9,11 @@ jwt_bearer = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwib
 
 ENV["BEARER_TOKEN"] = "" # no auth
 
-auth_handler = GptSearchPlugin.Server.get_auth_middleware(Set(["/stop"]))
+auth_handler = GptSearchPlugin.AppServer.get_auth_middleware(Set(["/stop"]))
 @test isnothing(auth_handler)
 
 ENV["BEARER_TOKEN"] = jwt_bearer
-auth_handler = GptSearchPlugin.Server.get_auth_middleware(Set(["/stop"]))
+auth_handler = GptSearchPlugin.AppServer.get_auth_middleware(Set(["/stop"]))
 @test !isnothing(auth_handler)
 
 http_req_no_auth = HTTP.Messages.Request()

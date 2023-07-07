@@ -1,6 +1,6 @@
 module DataStore
 
-using ..Server
+using ..AppServer
 using Mocking
 using DebugDataWriter
 
@@ -27,7 +27,7 @@ function upsert(documents::AbstractVector{Document}; chunk_token_size=0)::Upsert
         )
     )
 
-    chunks = Server.get_document_chunks(documents, chunk_token_size)
+    chunks = AppServer.get_document_chunks(documents, chunk_token_size)
 
     return upsert(STORAGE, chunks)
 end
@@ -40,7 +40,7 @@ function query(queries::AbstractVector{Query})::Vector{QueryResult}
 
     # get a list of of just the queries from the Query list
     query_texts = [query.query for query in queries]
-    query_embeddings = Server.create_embeddings(query_texts)
+    query_embeddings = AppServer.create_embeddings(query_texts)
 
     # hydrate the queries with embeddings
     queries_with_embeddings =
