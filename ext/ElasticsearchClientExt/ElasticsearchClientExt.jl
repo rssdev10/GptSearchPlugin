@@ -112,7 +112,7 @@ function DataStore.query(
                     id=hit["_id"],
                     text=source["text"],
                     metadata=metadata,
-                    embedding=source["embedding"],
+                    # embedding=source["embedding"], # not required for ChatGPT
                     score=hit["_score"]
                 )
             end
