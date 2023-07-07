@@ -1,4 +1,4 @@
-module Server
+module AppServer
 
 using HTTP
 
@@ -56,8 +56,14 @@ function ping(::HTTP.Request)
 end
 
 function get_static_files_and_paths()
+    app_env = get(ENV, "APP_ENV", "dev")
+    @info "Application environment is $app_env"
+
     static_path = ".well-known"
     abs_path = joinpath(@__DIR__, "..") |> normpath
+    if !isequal(app_env, "prod")
+        abs_path = joinpath(abs_path, "resources", "dev-openai", ".") |> normpath
+    end
     local_path_position = lastindex(abs_path)
     well_known_path = joinpath(abs_path, static_path)
     static_files = filter(isfile, readdir(well_known_path, join=true))
@@ -67,7 +73,7 @@ function get_static_files_and_paths()
     )
 end
 
-function run_server(port=3333)
+function run_server(; host="127.0.0.1", port=3333, base_url="")
     try
         static_files, domain_paths = get_static_files_and_paths()
 
@@ -81,14 +87,15 @@ function run_server(port=3333)
                 ])
             )
         )
-        router = GptPluginServer.register(router, @__MODULE__; path_prefix="")
-        HTTP.register!(router, "POST", "/stop", stop)
+        router = GptPluginServer.register(router, @__MODULE__; path_prefix=string(base_url))
+
+        isinteractive() && HTTP.register!(router, "POST", "/stop", stop)
         HTTP.register!(router, "GET", "/ping", ping)
 
         for (abs_path, d_path) in zip(static_files, domain_paths)
             HTTP.register!(router, "GET", d_path, _ -> HTTP.Response(200, read(abs_path)))
         end
-        server[] = HTTP.serve!(router |> CorsMiddleware, port, verbose=true)
+        server[] = HTTP.serve!(router |> CorsMiddleware, host, port, verbose=false)
         wait(server[])
     catch ex
         @error("Server error", exception = (ex, catch_backtrace()))
@@ -97,4 +104,4 @@ end
 
 end
 
-# Server.run_server()
+# AppServer.run_server()

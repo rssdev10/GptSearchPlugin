@@ -3,8 +3,7 @@ info:
   title: Retrieval Plugin API
   description: A retrieval API for querying and filtering documents based on natural language queries and metadata
   version: 1.0.0
-  servers:
-    - url: https://your-app-url.com
+
 paths:
   /query:
     post:
@@ -32,6 +31,33 @@ paths:
                 $ref: "#/components/schemas/HTTPValidationError"
       security:
         - HTTPBearer: []
+  /upsert:
+    post:
+      summary: Data upload
+      description: Upload JSON document description
+      operationId: upsert_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertRequest"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpsertResponse"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+      security:
+        - HTTPBearer: []
+  # /upsert-file:
+  # /delete:
 components:
   schemas:
     DocumentChunkMetadata:
@@ -39,7 +65,8 @@ components:
       type: object
       properties:
         source:
-          $ref: "#/components/schemas/Source"
+          type: string
+          # $ref: "#/components/schemas/Source"
         source_id:
           title: Source Id
           type: string
@@ -87,7 +114,8 @@ components:
           title: Document Id
           type: string
         source:
-          $ref: "#/components/schemas/Source"
+          type: string
+          # $ref: "#/components/schemas/Source"
         source_id:
           title: Source Id
           type: string
@@ -124,6 +152,23 @@ components:
           title: Top K
           type: integer
           default: 3
+    QueryWithEmbedding:
+      type: object
+      properties:
+        query:
+          title: Query
+          type: string
+        filter:
+          $ref: "#/components/schemas/DocumentMetadataFilter"
+        top_k:
+          title: Top K
+          type: integer
+          default: 3
+        embedding:
+          title: Embedding
+          type: array
+          items:
+            type: number
     QueryRequest:
       title: QueryRequest
       required:
@@ -190,6 +235,70 @@ components:
         type:
           title: Error Type
           type: string
+    UpsertRequest:
+      required:
+        - documents
+      properties:
+        documents:
+          title: Documents
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+    Document:
+      type: object
+      required:
+        - text
+      properties:
+        id:
+          title: document id
+          type: string
+        text:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/DocumentMetadata"
+    DocumentMetadata:
+      type: object
+      properties:
+        source:
+          type: string
+          # $ref: "#/components/schemas/Source"
+        source_id:
+          type: string
+        url:
+          type: string
+        created_at:
+          type: string
+        author:
+          type: string
+    DocumentChunk:
+      type: object
+      required:
+        - text
+        - metadata
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/DocumentChunkMetadata"
+        embedding:
+          title: Embedding
+          type: array
+          items:
+            type: number
+        score:
+          title: Score
+          type: number
+    UpsertResponse:
+      type: object
+      required:
+        - ids
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
   securitySchemes:
     HTTPBearer:
       type: http
