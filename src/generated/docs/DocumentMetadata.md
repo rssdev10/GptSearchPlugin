@@ -4,7 +4,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**source** | **String** |  | [optional] [default to nothing]
+**source** | [***Source**](Source.md) |  | [optional] [default to nothing]
 **source_id** | **String** |  | [optional] [default to nothing]
 **url** | **String** |  | [optional] [default to nothing]
 **created_at** | **String** |  | [optional] [default to nothing]

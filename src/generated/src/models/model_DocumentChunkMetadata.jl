@@ -2,7 +2,8 @@
 # Do not modify this file directly. Modify the OpenAPI specification instead.
 
 
-@doc raw"""
+@doc raw"""DocumentChunkMetadata
+
     DocumentChunkMetadata(;
         source=nothing,
         source_id=nothing,
@@ -12,7 +13,7 @@
         document_id=nothing,
     )
 
-    - source::String
+    - source::Source
     - source_id::String
     - url::String
     - created_at::String
@@ -20,7 +21,7 @@
     - document_id::String
 """
 Base.@kwdef mutable struct DocumentChunkMetadata <: OpenAPI.APIModel
-    source::Union{Nothing, String} = nothing
+    source = nothing # spec type: Union{ Nothing, Source }
     source_id::Union{Nothing, String} = nothing
     url::Union{Nothing, String} = nothing
     created_at::Union{Nothing, String} = nothing
@@ -38,7 +39,7 @@ Base.@kwdef mutable struct DocumentChunkMetadata <: OpenAPI.APIModel
     end
 end # type DocumentChunkMetadata
 
-const _property_types_DocumentChunkMetadata = Dict{Symbol,String}(Symbol("source")=>"String", Symbol("source_id")=>"String", Symbol("url")=>"String", Symbol("created_at")=>"String", Symbol("author")=>"String", Symbol("document_id")=>"String", )
+const _property_types_DocumentChunkMetadata = Dict{Symbol,String}(Symbol("source")=>"Source", Symbol("source_id")=>"String", Symbol("url")=>"String", Symbol("created_at")=>"String", Symbol("author")=>"String", Symbol("document_id")=>"String", )
 OpenAPI.property_type(::Type{ DocumentChunkMetadata }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_DocumentChunkMetadata[name]))}
 
 function check_required(o::DocumentChunkMetadata)

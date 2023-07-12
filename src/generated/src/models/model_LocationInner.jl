@@ -3,7 +3,8 @@
 
 
 
-@doc raw"""
+@doc raw"""Location_inner
+
     LocationInner(; value=nothing)
 """
 mutable struct LocationInner <: OpenAPI.AnyOfAPIModel

@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **document_id** | **String** |  | [optional] [default to nothing]
-**source** | **String** |  | [optional] [default to nothing]
+**source** | [***Source**](Source.md) |  | [optional] [default to nothing]
 **source_id** | **String** |  | [optional] [default to nothing]
 **author** | **String** |  | [optional] [default to nothing]
 **start_date** | **String** |  | [optional] [default to nothing]
