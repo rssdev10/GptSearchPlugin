@@ -2,25 +2,8 @@
 # Do not modify this file directly. Modify the OpenAPI specification instead.
 
 
-@doc raw"""An enumeration.
-
-    Source(;
-    )
-
-"""
-Base.@kwdef mutable struct Source <: OpenAPI.APIModel
-
-    function Source()
-        return new()
-    end
-end # type Source
-
-const _property_types_Source = Dict{Symbol,String}()
-OpenAPI.property_type(::Type{ Source }, name::Symbol) = Union{Nothing,eval(Base.Meta.parse(_property_types_Source[name]))}
-
-function check_required(o::Source)
-    true
-end
-
-function OpenAPI.validate_property(::Type{ Source }, name::Symbol, val)
+if !isdefined(@__MODULE__, :Source)
+    const Source = String
+else
+    @warn("Skipping redefinition of Source to String")
 end

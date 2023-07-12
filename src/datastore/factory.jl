@@ -23,6 +23,7 @@ global DATASTORE_MODULE = let
 end
 using Pkg
 function get_datastore()::Union{AbstractStorage,Nothing}
+    @info string("Requested datastore: ", datastore_env())
     isnothing(DATASTORE_MODULE) && error("DATASTORE environment variable must be non empty and valid")
 
     DATASTORE_MODULE.create_storage()

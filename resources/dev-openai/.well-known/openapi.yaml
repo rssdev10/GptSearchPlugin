@@ -65,8 +65,8 @@ components:
       type: object
       properties:
         source:
-          type: string
-          # $ref: "#/components/schemas/Source"
+          # type: string
+          $ref: "#/components/schemas/Source"
         source_id:
           title: Source Id
           type: string
@@ -114,8 +114,8 @@ components:
           title: Document Id
           type: string
         source:
-          type: string
-          # $ref: "#/components/schemas/Source"
+          # type: string
+          $ref: "#/components/schemas/Source"
         source_id:
           title: Source Id
           type: string
@@ -260,8 +260,8 @@ components:
       type: object
       properties:
         source:
-          type: string
-          # $ref: "#/components/schemas/Source"
+          # type: string
+          $ref: "#/components/schemas/Source"
         source_id:
           type: string
         url:
