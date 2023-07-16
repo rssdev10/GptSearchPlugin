@@ -1,0 +1,64 @@
+# File template had taken from here: https://github.com/JuliaCI/Coverage.jl/blob/master/.github/workflows/CI.yml 
+
+name: CI
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags: '*'
+  workflow_dispatch:
+
+env:
+  JULIA_PKG_USE_CLI_GIT: true
+  DATASTORE: TEST
+  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+        #   - '1.9' # Check used Julia version
+          - '1' # Check latest Julia version
+        os:
+          - ubuntu-latest
+        arch:
+          - x64
+        include:
+          - version: '1'
+            os: windows-latest
+            arch: x64
+          - version: '1'
+            os: macos-latest
+            arch: x64
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
+        env:
+          JULIA_COVERAGE_BLACK_HOLE_SERVER_URL_PUT: https://httpbingo.julialang.org/put
+    #   # submit coverage data to a black hole server, and collect new coverage data on that
+    #   - run: julia --color=yes --code-coverage=user etc/coverage.jl
+    #     working-directory: ${{ github.workspace }}
+    #   - name: Coveralls
+    #     uses: coverallsapp/github-action@master
+    #     with:
+    #       github-token: ${{ secrets.GITHUB_TOKEN }}
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-docdeploy@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
