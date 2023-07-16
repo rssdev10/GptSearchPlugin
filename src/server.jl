@@ -67,9 +67,14 @@ function get_static_files_and_paths()
     local_path_position = lastindex(abs_path)
     well_known_path = joinpath(abs_path, static_path)
     static_files = filter(isfile, readdir(well_known_path, join=true))
+
     return (
         static_files=static_files,
-        paths=map(fn -> fn[local_path_position:end], static_files)
+        paths=map(static_files) do fn
+            res = fn[local_path_position:end]
+
+            @static Sys.iswindows() ? replace(res, '\\' => '/') : res
+        end
     )
 end
 
