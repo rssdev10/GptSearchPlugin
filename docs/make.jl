@@ -12,4 +12,4 @@ makedocs(
     ]
 )
 
-deploydocs(repo = "github.com/OpenSesame/GptSearchPlugin.jl.git")
+deploydocs(repo = "github.com/OpenSesame/GptSearchPlugin.git")
