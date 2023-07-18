@@ -1,9 +1,12 @@
 # GptSearchPlugin
+
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://opensesame.github.io/GptSearchPlugin)
+
 Simple and pure Julia-based implementation of a GPT retrieval plugin logic
 
 ## Minimal configuration
 
-Run storage server. Now is available Elasticsearch as a docker-container. [Use this script](providers/Elasticsearch/docker-compose.yml) and run `docker-compose up` in a command line
+Run storage server. Now is available Elasticsearch as a docker-container. [Use this script](docs/src/Providers/Elasticsearch/docker-compose.yml) and run `docker-compose up` in a command line
 
 
 Setup environment variables:
