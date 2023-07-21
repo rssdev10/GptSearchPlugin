@@ -1,6 +1,7 @@
 # GptSearchPlugin
 
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://opensesame.github.io/GptSearchPlugin)
+<!-- [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://opensesame.github.io/GptSearchPlugin) -->
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://opensesame.github.io/GptSearchPlugin/dev)
 
 Simple and pure Julia-based implementation of a GPT retrieval plugin logic
 
