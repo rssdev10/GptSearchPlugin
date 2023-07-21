@@ -4,6 +4,7 @@ authors = ["Community contributors"]
 version = "0.1.0"
 
 [deps]
+AWS = "fbe9abb3-538b-5e4e-ba9e-bc94f4f92ebc"
 BytePairEncoding = "a4280ba5-8788-555a-8ca8-4a8c3d966a71"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DebugDataWriter = "810e33c6-efd6-4462-86b1-f71ae88af720"

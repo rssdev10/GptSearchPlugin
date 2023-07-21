@@ -1,0 +1,11 @@
+version: '3'
+services:
+  opensearch-node: # This is also the hostname of the container within the Docker network (i.e. https://opensearch-node1/)
+    image: opensearchproject/opensearch:latest # Specifying the latest available image - modify if you want a specific version
+    container_name: opensearch-node
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+    ports:
+      - 9200:9200 # REST API
+      - 9600:9600 # Performance Analyzer

@@ -15,6 +15,11 @@ global DATASTORE_MODULE = let
         include("../../ext/ElasticsearchClientExt/ElasticsearchClientExt.jl")
 
         ElasticsearchClientExt
+    elseif isequal(datastore, "OPENSEARCH")
+        @info "Pluging OpenSearchExt"
+        include("../../ext/OpenSearchExt/OpenSearchExt.jl")
+        
+        OpenSearchExt
     elseif isequal(datastore, "TEST")
         TestStorageExt
     else
