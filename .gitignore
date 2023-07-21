@@ -5,7 +5,7 @@ Manifest.toml
 /docs/build/
 /docs/Manifest.toml
 debug_out
-
+envs*
 
 # VS Code
 .vscode/*
