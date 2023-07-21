@@ -7,8 +7,11 @@ using TimeZones
 
 const AWS_REQUEST_HEADERS = ["Host", "Content-Type", "User-Agent"]
 const AWS_AUTH_HEADERS = ["Authorization", "Content-MD5", "x-amz-date", "x-amz-security-token"]
+
 const ES_SERVICE_NAME = "es"
+# TODO: add a mechanism for configuring a region of deployment for the instance
 const ES_REGION = "us-west-1"
+
 const ACCEPT_HEADER_KEY = "Accept"
 
 function auth_layer(handler)
