@@ -11,6 +11,7 @@ makedocs(
         "Vector storage providers" => [
             "Getting Started" => "Providers/index.md",
             "Elasticsearch" => "Providers/Elasticsearch/index.md",
+            "OpenSearch" => "Providers/Opensearch/index.md",
         ],
         "Internals" => "Internals/index.md"
     ]

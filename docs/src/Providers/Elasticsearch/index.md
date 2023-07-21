@@ -5,4 +5,9 @@ Use our [compose-script](docker-compose.yml) and run the following command in a 
 
     docker-compose up
 
-If you want to configure a cluster [see full instructions](https://www.elastic.co/guide/en/elasticsearch/reference/8.8/docker.html#docker)
+If you want to configure a cluster [see full instructions](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker)
+
+To enable ElasticSearch use:
+```bash
+export DATASTORE=ELASTICSEARCH
+```
