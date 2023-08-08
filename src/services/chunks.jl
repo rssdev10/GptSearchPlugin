@@ -68,10 +68,18 @@ function get_text_chunks(text::String, chunk_token_size=0)::Vector{<:AbstractStr
         # Skip the chunk if it is empty or whitespace
         if isempty(chunk_text)
             # Remove the tokens corresponding to the chunk text from the remaining tokens
-            tokens = tokens[length(chunk) :end]
+            tokens = tokens[(length(chunk) + 1) :end]
             # Continue to the next iteration of the loop
             continue
         end
+
+        if !isvalid(chunk_text[end]) # check wrond multibyte unicode
+            chunk_text = chunk_text[1:prevind(chunk_text, end)]
+        end
+
+        # Space-token value depends on a Korean hieroglyph after it.
+        # Ending space should be a start of the next chunk.
+        chunk_text = strip(chunk_text)
 
         # Find the last period or punctuation mark in the chunk
         last_punctuation =
@@ -97,13 +105,14 @@ function get_text_chunks(text::String, chunk_token_size=0)::Vector{<:AbstractStr
         # Remove any newline characters and strip any leading or trailing whitespace
         chunk_text_to_append = replace(chunk_text, "\n" => " ") |> strip
 
-        if length(chunk_text_to_append) > MIN_CHUNK_LENGTH_TO_EMBED
+        if length(chunk_text_to_append) > MIN_CHUNK_LENGTH_TO_EMBED ||
+            any(c -> sizeof(c) > 2, chunk_text_to_append) # there are 3-bytes hieroglyphs
             # Append the chunk text to the list of chunks
             push!(chunks, chunk_text_to_append)
         end
 
         # Remove the tokens corresponding to the chunk text from the remaining tokens
-        tokens = tokens[length(encode(chunk_text)):end]
+        tokens = tokens[length(encode(chunk_text))+1:end]
 
         # Increment the number of chunks
         num_chunks += 1
@@ -113,7 +122,8 @@ function get_text_chunks(text::String, chunk_token_size=0)::Vector{<:AbstractStr
     if !isempty(tokens)
         remaining_text = decode(tokens) |> str -> replace(str, "\n" => " ") |> strip
         if length(remaining_text) > MIN_CHUNK_LENGTH_TO_EMBED
-            push!(chunks, remaining_text)
+            # remove wrong unicode symbols from incomplete token sequences
+            push!(chunks, filter(isvalid, remaining_text))
         end
     end
 
@@ -137,11 +147,13 @@ function create_document_chunks(
     # Generate a document id if not provided
     doc_id = !isnothing(doc.id) && !isempty(doc.id) ? doc.id : string(UUIDs.uuid4())
 
+    text = doc.text
+
     # Check if the document text is empty or whitespace
-    !isempty(doc.text) || return ([], doc_id)
+    !isempty(text) || return ([], doc_id)
 
     # Split the document text into chunks
-    text_chunks = get_text_chunks(doc.text, chunk_token_size)
+    text_chunks = get_text_chunks(text, chunk_token_size)
 
     metadata = DocumentChunkMetadata()
     if !isnothing(doc.metadata)
