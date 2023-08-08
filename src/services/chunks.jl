@@ -4,11 +4,13 @@ using UUIDs
 
 using BytePairEncoding: gpt2_codemap, GPT2Tokenization, Merge, BPE, BPETokenization
 using TextEncodeBase: TextEncodeBase, FlatTokenizer, CodeNormalizer, Sentence, getvalue, CodeUnMap
-using Downloads
+using HuggingFaceApi
 
 # Global variables
 tokenizer = let
-    bpe = BPE(Downloads.download("https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-merges.txt"))
+    url = HuggingFaceURL("gpt2", "merges.txt")
+    file = HuggingFaceApi.cached_download(url)
+    bpe = BPE(file)
     FlatTokenizer(CodeNormalizer(BPETokenization(GPT2Tokenization(), bpe), gpt2_codemap()))
 
     #     tiktoken.get_encoding(
@@ -108,7 +110,7 @@ function get_text_chunks(text::String, chunk_token_size=0)::Vector{<:AbstractStr
         if length(chunk_text_to_append) > MIN_CHUNK_LENGTH_TO_EMBED ||
             any(c -> sizeof(c) > 2, chunk_text_to_append) # there are 3-bytes hieroglyphs
             # Append the chunk text to the list of chunks
-            push!(chunks, chunk_text_to_append)
+            push!(chunks, filter(isvalid, chunk_text_to_append))
         end
 
         # Remove the tokens corresponding to the chunk text from the remaining tokens
