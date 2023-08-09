@@ -180,6 +180,7 @@ function single_query(
     )
 
     full_query = Dict(
+        :size => query.top_k,
         :query => Dict(
             :bool => Dict(
                 :must => [knn_query]
