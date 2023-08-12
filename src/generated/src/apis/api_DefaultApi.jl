@@ -2,8 +2,35 @@
 # Do not modify this file directly. Modify the OpenAPI specification instead.
 
 
-function query_query_post_read(handler)
-    function query_query_post_read_handler(req::HTTP.Request)
+function delete_docs_read(handler)
+    function delete_docs_read_handler(req::HTTP.Request)
+        openapi_params = Dict{String,Any}()
+        openapi_params["DeleteRequest"] = OpenAPI.Servers.to_param_type(DeleteRequest, String(req.body))
+        req.context[:openapi_params] = openapi_params
+
+        return handler(req)
+    end
+end
+
+function delete_docs_validate(handler)
+    function delete_docs_validate_handler(req::HTTP.Request)
+        openapi_params = req.context[:openapi_params]
+        
+        return handler(req)
+    end
+end
+
+function delete_docs_invoke(impl; post_invoke=nothing)
+    function delete_docs_invoke_handler(req::HTTP.Request)
+        openapi_params = req.context[:openapi_params]
+        ret = impl.delete_docs(req::HTTP.Request, openapi_params["DeleteRequest"];)
+        resp = OpenAPI.Servers.server_response(ret)
+        return (post_invoke === nothing) ? resp : post_invoke(req, resp)
+    end
+end
+
+function query_post_read(handler)
+    function query_post_read_handler(req::HTTP.Request)
         openapi_params = Dict{String,Any}()
         openapi_params["QueryRequest"] = OpenAPI.Servers.to_param_type(QueryRequest, String(req.body))
         req.context[:openapi_params] = openapi_params
@@ -12,18 +39,18 @@ function query_query_post_read(handler)
     end
 end
 
-function query_query_post_validate(handler)
-    function query_query_post_validate_handler(req::HTTP.Request)
+function query_post_validate(handler)
+    function query_post_validate_handler(req::HTTP.Request)
         openapi_params = req.context[:openapi_params]
         
         return handler(req)
     end
 end
 
-function query_query_post_invoke(impl; post_invoke=nothing)
-    function query_query_post_invoke_handler(req::HTTP.Request)
+function query_post_invoke(impl; post_invoke=nothing)
+    function query_post_invoke_handler(req::HTTP.Request)
         openapi_params = req.context[:openapi_params]
-        ret = impl.query_query_post(req::HTTP.Request, openapi_params["QueryRequest"];)
+        ret = impl.query_post(req::HTTP.Request, openapi_params["QueryRequest"];)
         resp = OpenAPI.Servers.server_response(ret)
         return (post_invoke === nothing) ? resp : post_invoke(req, resp)
     end
@@ -50,7 +77,7 @@ end
 function upsert_post_invoke(impl; post_invoke=nothing)
     function upsert_post_invoke_handler(req::HTTP.Request)
         openapi_params = req.context[:openapi_params]
-        ret = impl.upsert_post(req::HTTP.Request; upsert_request=get(openapi_params, "UpsertRequest", nothing),)
+        ret = impl.upsert_post(req::HTTP.Request, openapi_params["UpsertRequest"];)
         resp = OpenAPI.Servers.server_response(ret)
         return (post_invoke === nothing) ? resp : post_invoke(req, resp)
     end
@@ -58,7 +85,8 @@ end
 
 
 function registerDefaultApi(router::HTTP.Router, impl; path_prefix::String="", optional_middlewares...)
-    HTTP.register!(router, "POST", path_prefix * "/query", OpenAPI.Servers.middleware(impl, query_query_post_read, query_query_post_validate, query_query_post_invoke; optional_middlewares...))
+    HTTP.register!(router, "DELETE", path_prefix * "/delete", OpenAPI.Servers.middleware(impl, delete_docs_read, delete_docs_validate, delete_docs_invoke; optional_middlewares...))
+    HTTP.register!(router, "POST", path_prefix * "/query", OpenAPI.Servers.middleware(impl, query_post_read, query_post_validate, query_post_invoke; optional_middlewares...))
     HTTP.register!(router, "POST", path_prefix * "/upsert", OpenAPI.Servers.middleware(impl, upsert_post_read, upsert_post_validate, upsert_post_invoke; optional_middlewares...))
     return router
 end
