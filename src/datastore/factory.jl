@@ -2,15 +2,19 @@
 using Pkg
 datastore_env() = get(ENV, "DATASTORE", "")
 
-global DATASTORE_MODULE = let
+const DATASTORE_MODULE = Ref{Module}()
+
+begin
     datastore = datastore_env() |> uppercase
+
+    @info string("Requested datastore: ", datastore_env())
 
     # workaround to detect running in test mode
     if isnothing(Pkg.project().name)
         datastore = "TEST"
     end
 
-    if isequal(datastore, "ELASTICSEARCH")
+    global DATASTORE_MODULE[] = if isequal(datastore, "ELASTICSEARCH")
         @info "Pluging ElasticsearchClientExt"
         include("../../ext/ElasticsearchClientExt/ElasticsearchClientExt.jl")
 
@@ -21,15 +25,18 @@ global DATASTORE_MODULE = let
         
         OpenSearchExt
     elseif isequal(datastore, "TEST")
+        @info "Dummy storage for the logic check only"
+        include("teststorage.jl")
+
         TestStorageExt
     else
-        nothing
+        error("DATASTORE environment variable must be non empty and valid")
     end
 end
-using Pkg
-function get_datastore()::Union{AbstractStorage,Nothing}
-    @info string("Requested datastore: ", datastore_env())
-    isnothing(DATASTORE_MODULE) && error("DATASTORE environment variable must be non empty and valid")
 
-    DATASTORE_MODULE.create_storage()
+function get_datastore()::Union{AbstractStorage,Nothing}
+    global DATASTORE_MODULE
+    isassigned(DATASTORE_MODULE) || error("DATASTORE environment variable must be non empty and valid")
+
+    DATASTORE_MODULE[].create_storage()
 end

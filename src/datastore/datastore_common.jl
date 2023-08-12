@@ -2,8 +2,6 @@ using ..GptPluginServer
 
 abstract type AbstractStorage end
 
-include("teststorage.jl")
-
 """
 Takes in a list of list of document chunks and inserts them into the database.
 
@@ -45,6 +43,6 @@ Removes everything in the datastore
 
 Returns whether the operation was successful.
 """
-function delete_all(storage::AbstractStorage)
+function delete_all(storage::AbstractStorage)::Bool
     error("The method 'delete_all' is not implemeted for $(typeof(storage))")
 end
