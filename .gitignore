@@ -6,6 +6,7 @@ Manifest.toml
 /docs/Manifest.toml
 debug_out
 envs*
+sysimage/
 
 # VS Code
 .vscode/*
