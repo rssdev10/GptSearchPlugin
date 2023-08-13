@@ -59,7 +59,7 @@ function query(queries::AbstractVector{Query})::Vector{QueryResult}
 end
 
 """
-Removes documents by ids, filter or all togather
+Removes documents by ids, filter or all together
 Multiple parameters can be used at once.
 
 Returns whether the operation was successful.
