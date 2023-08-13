@@ -57,6 +57,25 @@ function query(queries::AbstractVector{Query})::Vector{QueryResult}
 
     return query(STORAGE[], queries_with_embeddings)
 end
+
+"""
+Removes documents by ids, filter or all togather
+Multiple parameters can be used at once.
+
+Returns whether the operation was successful.
+"""
+function delete(;
+    ids::Union{Vector{<:AbstractString}, Nothing},
+    filter::Union{Vector{DocumentMetadataFilter}, Nothing},
+    delete_all::Bool
+)::Bool
+    @assert isassigned(STORAGE) "Storage is not initialized"
+
+    delete_all && return DataStore.delete_all(STORAGE[])
+
+    doc_filter = isnothing(filter) ? map(id -> DocumentMetadataFilter(document_id=id), ids) : filter
+
+    return delete(STORAGE[]; filter=doc_filter)
 end
 
 function __init__()

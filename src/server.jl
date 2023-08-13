@@ -18,7 +18,7 @@ const server = Ref{Any}(nothing)
 """
 - *invocation:* POST /query
 """
-function query_query_post(req::HTTP.Request, query_request::QueryRequest;)::QueryResponse
+function query_post(req::HTTP.Request, query_request::QueryRequest;)::Union{QueryResponse, HTTP.Response}
     try
         return QueryResponse(
             results=DataStore.query(query_request.queries)
@@ -34,7 +34,7 @@ end
 """
 - *invocation:* POST /upsert
 """
-function upsert_post(req::HTTP.Request; upsert_request=nothing)::UpsertResponse
+function upsert_post(req::HTTP.Request, upsert_request::UpsertRequest;)::Union{UpsertResponse, HTTP.Response}
     documents = upsert_request.documents
 
     if isa(documents, AbstractVector)
@@ -44,6 +44,29 @@ function upsert_post(req::HTTP.Request; upsert_request=nothing)::UpsertResponse
     end
 
     return HTTP.Response(500, "Internal server error")
+end
+
+"""
+- *invocation:* DELETE /delete
+"""
+function delete_docs(req::HTTP.Request, request::DeleteRequest)::Union{DeleteResponse, HTTP.Response}
+    if isnothing(request.ids) && isnothing(request.filter) && request.delete_all == false
+        return HTTP.Response(400, "One of ids, filter, or delete_all is required")
+    end
+
+    try
+        return DeleteResponse(
+            DataStore.delete(
+                ids=request.ids,
+                filter=request.filter,
+                delete_all=request.delete_all
+            )
+        )
+    catch e
+        showerror(stderr, e)
+        display(stacktrace(catch_backtrace()))
+        throw(e)
+    end        
 end
 
 function stop(::HTTP.Request)
