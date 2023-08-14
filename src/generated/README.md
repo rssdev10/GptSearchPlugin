@@ -41,13 +41,16 @@ The following server methods must be implemented:
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**query_query_post**](docs/DefaultApi.md#query_query_post) | **POST** /query | Query
+*DefaultApi* | [**delete_docs**](docs/DefaultApi.md#delete_docs) | **DELETE** /delete | Delete
+*DefaultApi* | [**query_post**](docs/DefaultApi.md#query_post) | **POST** /query | Query
 *DefaultApi* | [**upsert_post**](docs/DefaultApi.md#upsert_post) | **POST** /upsert | Data upload
 
 
 
 ## Models
 
+ - [DeleteRequest](docs/DeleteRequest.md)
+ - [DeleteResponse](docs/DeleteResponse.md)
  - [Document](docs/Document.md)
  - [DocumentChunk](docs/DocumentChunk.md)
  - [DocumentChunkMetadata](docs/DocumentChunkMetadata.md)

@@ -4,10 +4,10 @@ using ..AppServer
 using Mocking
 using DebugDataWriter
 
-include("datastor_common.jl")
+include("datastore_common.jl")
 include("factory.jl")
 
-STORAGE = nothing
+const STORAGE = Ref{AbstractStorage}()
 
 """
 Takes in a list of documents and inserts them into the database.
@@ -17,10 +17,10 @@ then inserts the new ones.
 Return a list of document ids.
 """
 function upsert(documents::AbstractVector{Document}; chunk_token_size=0)::UpsertResponse
-    @assert !isnothing(STORAGE) "Storage is not initialized"
+    @assert isassigned(STORAGE) "Storage is not initialized"
 
     delete(
-        STORAGE,
+        STORAGE[],
         filter=map(
             document -> DocumentMetadataFilter(document_id=document.id),
             documents
@@ -29,14 +29,14 @@ function upsert(documents::AbstractVector{Document}; chunk_token_size=0)::Upsert
 
     chunks = AppServer.get_document_chunks(documents, chunk_token_size)
 
-    return upsert(STORAGE, chunks)
+    return upsert(STORAGE[], chunks)
 end
 
 """
 Takes in a list of queries and filters and returns a list of query results with matching document chunks and scores.
 """
 function query(queries::AbstractVector{Query})::Vector{QueryResult}
-    @assert !isnothing(STORAGE) "Storage is not initialized"
+    @assert isassigned(STORAGE) "Storage is not initialized"
 
     # get a list of of just the queries from the Query list
     query_texts = [query.query for query in queries]
@@ -55,10 +55,30 @@ function query(queries::AbstractVector{Query})::Vector{QueryResult}
 
     @debug_output get_debug_id("datastore") "storage query" queries_with_embeddings
 
-    return query(STORAGE, queries_with_embeddings)
+    return query(STORAGE[], queries_with_embeddings)
+end
+
+"""
+Removes documents by ids, filter or all together
+Multiple parameters can be used at once.
+
+Returns whether the operation was successful.
+"""
+function delete(;
+    ids::Union{Vector{<:AbstractString}, Nothing},
+    filter::Union{Vector{DocumentMetadataFilter}, Nothing},
+    delete_all::Bool
+)::Bool
+    @assert isassigned(STORAGE) "Storage is not initialized"
+
+    delete_all && return DataStore.delete_all(STORAGE[])
+
+    doc_filter = isnothing(filter) ? map(id -> DocumentMetadataFilter(document_id=id), ids) : filter
+
+    return delete(STORAGE[]; filter=doc_filter)
 end
 
 function __init__()
-    global STORAGE = get_datastore()
+    global STORAGE[] = get_datastore()
 end
 end

@@ -9,7 +9,8 @@ tests = [
     # "test_aqua.jl",
     "test_auth.jl",
     "test_chunks.jl",
-    "test_appserver.jl"
+    "test_appserver.jl",
+    "test_api.jl"
 ]
 
 @info log("Running tests....")

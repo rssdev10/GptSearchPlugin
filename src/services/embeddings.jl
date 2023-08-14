@@ -3,14 +3,14 @@ using OpenAI
 using DebugDataWriter
 using Mocking
 
-OPENAI_API_KEY = get(ENV, "OPENAI_API_KEY", "")
+openai_api_key_env() = get(ENV, "OPENAI_API_KEY", "")
 
 
 const EMPTY_EMBEDDING_RESULT = Float64[]
 const EMPTY_BATCH_EMBEDDING_RESULT = Vector{Float64}[]
 
 function create_embeddings(batch_texts::Vector{<:AbstractString})::Vector{Vector{Float64}}
-    response = @mock OpenAI.create_embeddings(OPENAI_API_KEY, batch_texts)
+    response = @mock OpenAI.create_embeddings(openai_api_key_env(), batch_texts)
     result = EMPTY_BATCH_EMBEDDING_RESULT
 
     @debug_output get_debug_id("batch_embeddings") "OpenAI" response
@@ -27,7 +27,7 @@ function create_embeddings(batch_texts::Vector{<:AbstractString})::Vector{Vector
 end
 
 function create_embeddings(text::AbstractString)
-    response = @mock OpenAI.create_embeddings(OPENAI_API_KEY, text)
+    response = @mock OpenAI.create_embeddings(openai_api_key_env(), text)
     result = EMPTY_EMBEDDING_RESULT
 
     @debug_output get_debug_id("embeddings") "OpenAI" response

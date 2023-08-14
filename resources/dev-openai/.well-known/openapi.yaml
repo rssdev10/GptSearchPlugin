@@ -9,7 +9,7 @@ paths:
     post:
       summary: Query
       description: Accepts search query objects array each with query and optional filter. Break down complex questions into sub-questions. Refine results by criteria, e.g. time / source, don't do this often. Split queries if ResponseTooLargeError occurs.
-      operationId: query_query_post
+      operationId: query_post
       requestBody:
         content:
           application/json:
@@ -41,6 +41,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/UpsertRequest"
+        required: true
       responses:
         "200":
           description: Successful Response
@@ -57,7 +58,26 @@ paths:
       security:
         - HTTPBearer: []
   # /upsert-file:
-  # /delete:
+  /delete:
+    delete:
+      summary: Delete
+      description: Delete one or more documents
+      operationId: delete_docs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteRequest"
+        required: true
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteResponse"
+      security:
+        - HTTPBearer: []
 components:
   schemas:
     DocumentChunkMetadata:
@@ -299,6 +319,29 @@ components:
           type: array
           items:
             type: string
+
+    DeleteRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+        filter:
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentMetadataFilter"
+        delete_all:
+          type: boolean
+          default: false
+    DeleteResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+
   securitySchemes:
     HTTPBearer:
       type: http

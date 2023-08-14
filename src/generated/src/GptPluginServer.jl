@@ -7,12 +7,15 @@ Encapsulates generated server code for GptPluginServer
 
 The following server methods must be implemented:
 
-- **query_query_post**
+- **delete_docs**
+    - *invocation:* DELETE /delete
+    - *signature:* delete_docs(req::HTTP.Request, delete_request::DeleteRequest;) -> DeleteResponse
+- **query_post**
     - *invocation:* POST /query
-    - *signature:* query_query_post(req::HTTP.Request, query_request::QueryRequest;) -> QueryResponse
+    - *signature:* query_post(req::HTTP.Request, query_request::QueryRequest;) -> QueryResponse
 - **upsert_post**
     - *invocation:* POST /upsert
-    - *signature:* upsert_post(req::HTTP.Request; upsert_request=nothing,) -> UpsertResponse
+    - *signature:* upsert_post(req::HTTP.Request, upsert_request::UpsertRequest;) -> UpsertResponse
 """
 module GptPluginServer
 
@@ -55,6 +58,8 @@ function register(router::HTTP.Router, impl; path_prefix::String="", optional_mi
 end
 
 # export models
+export DeleteRequest
+export DeleteResponse
 export Document
 export DocumentChunk
 export DocumentChunkMetadata

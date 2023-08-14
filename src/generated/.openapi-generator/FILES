@@ -1,5 +1,7 @@
 README.md
 docs/DefaultApi.md
+docs/DeleteRequest.md
+docs/DeleteResponse.md
 docs/Document.md
 docs/DocumentChunk.md
 docs/DocumentChunkMetadata.md
@@ -20,6 +22,8 @@ docs/ValidationError.md
 src/GptPluginServer.jl
 src/apis/api_DefaultApi.jl
 src/modelincludes.jl
+src/models/model_DeleteRequest.jl
+src/models/model_DeleteResponse.jl
 src/models/model_Document.jl
 src/models/model_DocumentChunk.jl
 src/models/model_DocumentChunkMetadata.jl
