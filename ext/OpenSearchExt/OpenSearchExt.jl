@@ -38,7 +38,7 @@ struct OpensearchStorage <: AbstractStorage
     function OpensearchStorage(client::ElasticsearchClient.Client, local_storage::Bool)
         index_name = chunks_index_name()
 
-        if !ElasticsearchClient.Indices.exists(client, index=index_name, auth_params=get_auth_params(local_storage))
+        if !ElasticsearchClient.Indices.exists(client, index=index_name, auth_params=get_auth_creds(local_storage))
             index_settings_template =
                 read(CHUNKS_INDEX_SCHEMA_FILE_PATH) |>
                 String |>
@@ -57,7 +57,7 @@ struct OpensearchStorage <: AbstractStorage
                     client,
                     index=index_name,
                     body=index_settings,
-                    auth_params=get_auth_params(local_storage)
+                    auth_params=get_auth_creds(local_storage)
                 )
             catch e
                 @error e
@@ -89,7 +89,7 @@ struct AuthParams
         )
     end
 end
-global CURRENT_AUTH_PARAMS::Union{Nothing,Ref{AWSCredentials}} = nothing
+global CURRENT_AUTH_PARAMS::Union{Nothing,Ref{AuthParams}} = nothing
 
 """
 Takes in a list of list of document chunks and inserts them into the database.
@@ -116,8 +116,8 @@ function DataStore.upsert(
         push!(index_batch, Dict(operation_name => operation_body))
     end
 
-    ElasticsearchClient.bulk(storage.client, index=storage.chunks_index_name, body=index_batch, auth_params=get_auth_params(storage))
-    ElasticsearchClient.Indices.refresh(storage.client, index=storage.chunks_index_name, auth_params=get_auth_params(storage))
+    ElasticsearchClient.bulk(storage.client, index=storage.chunks_index_name, body=index_batch, auth_params=get_auth_creds(storage))
+    ElasticsearchClient.Indices.refresh(storage.client, index=storage.chunks_index_name, auth_params=get_auth_creds(storage))
 
     UpsertResponse(collect(keys(chunks)))
 end
@@ -206,7 +206,7 @@ function single_query(
         storage.client,
         index=storage.chunks_index_name, 
         body=full_query,
-        auth_params=get_auth_params(storage)
+        auth_params=get_auth_creds(storage)
     )
 
     (query, task)
@@ -239,7 +239,7 @@ function DataStore.delete(
         storage.client,
         index=storage.chunks_index_name,
         body=query,
-        auth_params=get_auth_params(storage)
+        auth_params=get_auth_creds(storage)
     )
 
     response.status == 200
@@ -257,7 +257,7 @@ function DataStore.delete_all(storage::OpensearchStorage)::Bool
         storage.client,
         index=storage.chunks_index_name,
         body=query,
-        auth_params=get_auth_params(storage)
+        auth_params=get_auth_creds(storage)
     )
 
     response.status == 200
@@ -265,6 +265,11 @@ end
 
 function create_storage()
     local_storage = get(ENV, "LOCAL_STORAGE", true)
+
+    if local_storage isa AbstractString
+        local_storage = local_storage == "true"
+    end
+
     if local_storage
         OpensearchStorage(
             ElasticsearchClient.Client(
@@ -291,16 +296,16 @@ function create_storage()
     end
 end
 
-function get_auth_params(local_storage::Bool)
+function get_auth_creds(local_storage::Bool)
     local_storage && return
 
     if isnothing(CURRENT_AUTH_PARAMS) || now() > CURRENT_AUTH_PARAMS.x.expires_at
         refresh_auth_params()
     end
 
-    CURRENT_AUTH_PARAMS.x
+    CURRENT_AUTH_PARAMS.x.creds
 end
-get_auth_params(storage::OpensearchStorage) = get_auth_params(storage.local_storage)
+get_auth_creds(storage::OpensearchStorage) = get_auth_creds(storage.local_storage)
 
 function refresh_auth_params()
     global CURRENT_AUTH_PARAMS = Ref(AuthParams())
