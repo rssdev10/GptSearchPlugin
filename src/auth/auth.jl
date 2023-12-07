@@ -25,7 +25,7 @@ function validate_bearer_token(
     req.target in except_list && return true
 
     auth_header_index = findfirst(req.headers) do (title, _)
-        isequal(title, "Authorization")
+        isequal(lowercase(title), "authorization")
     end
 
     isnothing(auth_header_index) && return false
