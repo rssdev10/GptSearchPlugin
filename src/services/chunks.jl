@@ -3,26 +3,31 @@ using .GptPluginServer: Document, DocumentChunk, DocumentChunkMetadata
 using UUIDs
 
 using BytePairEncoding: gpt2_codemap, GPT2Tokenization, Merge, BPE, BPETokenization
+using BytePairEncoding: tiktoken2bbpe, load_tiktoken
 using TextEncodeBase: TextEncodeBase, FlatTokenizer, CodeNormalizer, Sentence, getvalue, CodeUnMap
 using HuggingFaceApi
 
 # Global variables
-tokenizer = let
-    url = HuggingFaceURL("gpt2", "merges.txt")
-    file = HuggingFaceApi.cached_download(url)
-    bpe = BPE(file)
-    FlatTokenizer(CodeNormalizer(BPETokenization(GPT2Tokenization(), bpe), gpt2_codemap()))
+# const tokenizer = let
+#     url = HuggingFaceURL("gpt2", "merges.txt")
+#     file = HuggingFaceApi.cached_download(url)
+#     bpe = BPE(file)
+#     FlatTokenizer(CodeNormalizer(BPETokenization(GPT2Tokenization(), bpe), gpt2_codemap()))
+# end
+# const unmap = CodeUnMap(tokenizer.tokenization.codemap)
 
-    #     tiktoken.get_encoding(
-    #     "cl100k_base"
-    # )  # The encoding scheme to use for tokenization
-end
+const codemap = gpt2_codemap()
+const tokenizer = tiktoken2bbpe(load_tiktoken("cl100k_base"), codemap)
+const unmap = CodeUnMap(codemap)
 
 encode(text::AbstractString) = tokenizer(Sentence(text))
 
 function decode(tokens::Vector{TextEncodeBase.TokenStage})::String
-    unmap = CodeUnMap(tokenizer.tokenization.codemap)
     map(unmap ∘ getvalue, tokens) |> join
+end
+
+function decode(tokens::Vector{<:AbstractString})::String
+    map(unmap, tokens) |> join
 end
 
 # Constants
